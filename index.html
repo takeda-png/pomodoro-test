@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フロントエンド実技試験 - 60分</title>
+    <style>
+        /* ===== CSS Reset & Variables ===== */
+        :root {
+            --color-primary: #ef4444;
+            --color-primary-dark: #991b1b;
+            --color-bg: #f9fafb;
+            --color-bg-secondary: #ffffff;
+            --color-text: #111827;
+            --color-text-secondary: #6b7280;
+            --color-border: #e5e7eb;
+            --color-success: #10b981;
+            --color-accent: #3b82f6;
+            --spacing-unit: 8px;
+            --radius: 8px;
+            --transition: 0.3s ease;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg: #1f2937;
+                --color-bg-secondary: #111827;
+                --color-text: #f3f4f6;
+                --color-text-secondary: #d1d5db;
+                --color-border: #374151;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 2);
+        }
+
+        /* ===== Header ===== */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--color-bg-secondary);
+            box-shadow: var(--shadow);
+            padding: calc(var(--spacing-unit) * 2) 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: calc(var(--spacing-unit) * 2);
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 2);
+            align-items: center;
+        }
+
+        .timer-display {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            color: var(--color-primary);
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: var(--radius);
+            min-width: 180px;
+            text-align: center;
+            border: 2px solid var(--color-primary);
+            display: none;
+        }
+
+        .timer-display.active {
+            display: block;
+        }
+
+        .timer-display.warning {
+            animation: pulse 1s infinite;
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .start-button {
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+            background: var(--color-success);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .start-button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .start-button.hidden {
+            display: none;
+        }
+
+        .submit-button {
+            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 1);
+        }
+
+        .submit-button:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .submit-button.copied {
+            background: var(--color-accent);
+        }
+
+        /* ===== Main Content ===== */
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit) * 4);
+            padding: calc(var(--spacing-unit) * 4) 0;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* ===== Instructions Panel ===== */
+        .instructions-panel {
+            background: var(--color-bg-secondary);
+            padding: calc(var(--spacing-unit) * 4);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+            max-height: calc(100vh - 150px);
+        }
+
+        .instructions-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            color: var(--color-primary);
+        }
+
+        .instructions-section {
+            margin-bottom: calc(var(--spacing-unit) * 4);
+        }
+
+        .instructions-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            color: var(--color-accent);
+        }
+
+        .instructions-section p {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+        }
+
+        .instructions-section ul,
+        .instructions-section ol {
+            margin-left: calc(var(--spacing-unit) * 3);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        .instructions-section li {
+            margin-bottom: calc(var(--spacing-unit) * 1);
+            line-height: 1.6;
+        }
+
+        .requirement-box {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid var(--color-accent);
+            padding: calc(var(--spacing-unit) * 2);
+            margin: calc(var(--spacing-unit) * 2) 0;
+            border-radius: calc(var(--radius) / 2);
+        }
+
+        /* ===== Work Area ===== */
+        .work-area {
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--spacing-unit) * 3);
+        }
+
+        .code-section {
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius);
+            padding: calc(var(--spacing-unit) * 2);
+            box-shadow: var(--shadow);
+        }
+
+        .code-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-bottom: calc(var(--spacing-unit) * 1);
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 1);
+        }
+
+        .code-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        textarea {
+            width: 100%;
+            padding: calc(var(--spacing-unit) * 2);
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            background: var(--color-bg);
+            color: var(--color-text);
+            resize: vertical;
+            tab-size: 2;
+            -moz-tab-size: 2;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .preview-frame {
+            background: var(--color-bg);
+            border: 2px dashed var(--color-border);
+            border-radius: var(--radius);
+            padding: calc(var(--spacing-unit) * 3);
+            min-height: 300px;
+            margin-top: calc(var(--spacing-unit) * 2);
+        }
+
+        .preview-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+
+        /* ===== Exam Finished Overlay ===== */
+        .exam-finished-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .exam-finished-content {
+            text-align: center;
+            color: white;
+        }
+
+        .exam-finished-content h2 {
+            font-size: 3rem;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            color: var(--color-success);
+        }
+
+        .exam-finished-content p {
+            font-size: 1.25rem;
+            margin-bottom: calc(var(--spacing-unit) * 4);
+            color: var(--color-text-secondary);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .instructions-panel {
+                max-height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .timer-display {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Timer and Controls -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1 class="header-title">🧪 フロントエンド実技試験</h1>
+                <div class="header-controls">
+                    <button class="start-button" id="startBtn">▶ 試験を開始する</button>
+                    <div class="timer-display" id="timerDisplay">60:00</div>
+                    <button class="submit-button" id="submitBtn" title="現在の回答をコピー">
+                        <span>✅</span>
+                        <span>提出コードをコピー</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Instructions Panel -->
+        <aside class="instructions-panel">
+            <h2 class="instructions-title">📋 試験指示書</h2>
+
+            <div class="instructions-section">
+                <h3>試験概要</h3>
+                <p>このページの下のカスタム記述エリアに、指示書の内容を実装してください。</p>
+                <div class="requirement-box">
+                    <strong>⏱️ 試験時間：</strong> 60分
+                </div>
+            </div>
+
+            <div class="instructions-section">
+                <h3>課題 01: ヒーローセクション</h3>
+                <p>下のHTML入力欄に以下の要素を実装してください：</p>
+                <ul>
+                    <li>背景に大きなテキスト（例：「60分」）を配置</li>
+                    <li>タイトルは縦書きで配置</li>
+                    <li>斜めのライン効果またはグラデーション背景</li>
+                    <li>レスポンシブ対応（PC・タブレット・モバイル）</li>
+                </ul>
+                <div class="requirement-box">
+                    <strong>使用技術：</strong> HTML / CSS (CSS変数、Flexbox/Grid推奨)
+                </div>
+            </div>
+
+            <div class="instructions-section">
+                <h3>課題 02: ニュースリスト</h3>
+                <p>HTMLに以下を実装してください：</p>
+                <ul>
+                    <li>3枚以上のカード要素を並べる</li>
+                    <li>各カードに画像、タイトル、説明を配置</li>
+                    <li>ホバー時にスケール・シャドウ・テキスト色が変化するアニメーション</li>
+                    <li>プレースホルダー画像を使用（https://placehold.jp/）</li>
+                </ul>
+                <div class="requirement-box">
+                    <strong>使用技術：</strong> CSS Grid / Flexbox、トランジション・トランスフォーム
+                </div>
+            </div>
+
+            <div class="instructions-section">
+                <h3>課題 03: ベネフィットセクション</h3>
+                <p>HTMLに以下を実装してください：</p>
+                <ul>
+                    <li>3カラムレイアウト（数字、タイトル、説明）</li>
+                    <li>大きな数字にグラデーション色を適用</li>
+                    <li>Intersection Observer を使用したスクロール連動アニメーション</li>
+                    <li>数字の背景に装飾（円形、背景画像など）を追加</li>
+                </ul>
+                <div class="requirement-box">
+                    <strong>使用技術：</strong> JavaScript (Intersection Observer API)、CSS
+                </div>
+            </div>
+
+            <div class="instructions-section">
+                <h3>評価基準</h3>
+                <ol>
+                    <li><strong>コード品質：</strong> BEM命名規則、適切なHTML構造</li>
+                    <li><strong>ビジュアル：</strong> 指定されたデザイン要素の実装度</li>
+                    <li><strong>レスポンシブ：</strong> モバイル・タブレット・PCでの表示</li>
+                    <li><strong>アニメーション：</strong> スムーズで自然な動作</li>
+                    <li><strong>パフォーマンス：</strong> 不要なリフロー・リペイント回避</li>
+                </ol>
+            </div>
+
+            <div class="instructions-section">
+                <h3>注意事項</h3>
+                <ul>
+                    <li>外部ライブラリ（Bootstrap、jQuery等）の使用禁止</li>
+                    <li>素のHTML / CSS / JavaScriptのみ使用可</li>
+                    <li>下のコード記述エリアに実装してください</li>
+                    <li>入力内容はリアルタイムでプレビューに反映されます</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Work Area -->
+        <section class="work-area">
+            <!-- HTML Input -->
+            <div class="code-section">
+                <div class="code-title">HTML</div>
+                <textarea id="custom-html" style="height: 200px;"><div></div></textarea>
+            </div>
+
+            <!-- CSS Input -->
+            <div class="code-section">
+                <div class="code-title">CSS</div>
+                <textarea id="custom-css" style="height: 200px;">/* CSSをここに記述 */</textarea>
+            </div>
+
+            <!-- JavaScript Input -->
+            <div class="code-section">
+                <div class="code-title">JavaScript</div>
+                <textarea id="custom-js" style="height: 200px;">// JavaScriptをここに記述</textarea>
+            </div>
+
+            <!-- Preview Frame -->
+            <div>
+                <div class="code-section" style="padding: 0; box-shadow: none;">
+                    <div style="padding: calc(var(--spacing-unit) * 2); border-bottom: 1px solid var(--color-border);">
+                        <div class="preview-label">📺 プレビュー</div>
+                    </div>
+                    <div class="preview-frame" id="previewFrame"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // ===== State Management =====
+        const EXAM_DURATION = 60 * 60 * 1000; // 60 minutes
+        const STORAGE_KEY = 'exam_start_time';
+
+        let timerStarted = false;
+        let examFinished = false;
+        let START_TIME = null;
+
+        // ===== Load Saved Time =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTime = localStorage.getItem(STORAGE_KEY);
+            if (savedTime) {
+                START_TIME = parseInt(savedTime, 10);
+                startExam();
+            }
+        });
+
+        // ===== Start Exam Button =====
+        document.getElementById('startBtn').addEventListener('click', () => {
+            START_TIME = Date.now();
+            localStorage.setItem(STORAGE_KEY, START_TIME);
+            startExam();
+        });
+
+        function startExam() {
+            timerStarted = true;
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('timerDisplay').classList.add('active');
+            updateTimer();
+        }
+
+        // ===== Timer Function =====
+        function updateTimer() {
+            if (!timerStarted) return;
+
+            const elapsed = Date.now() - START_TIME;
+            const remaining = Math.max(0, EXAM_DURATION - elapsed);
+
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+
+            const timerDisplay = document.getElementById('timerDisplay');
+            timerDisplay.textContent = `残り時間：${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            // Warning animation
+            if (minutes <= 4 && seconds < 60) {
+                timerDisplay.classList.add('warning');
+            } else {
+                timerDisplay.classList.remove('warning');
+            }
+
+            // Exam finished
+            if (remaining <= 0 && !examFinished) {
+                examFinished = true;
+                localStorage.removeItem(STORAGE_KEY);
+                showExamFinishedOverlay();
+                disableAllInputs();
+            } else if (remaining > 0) {
+                requestAnimationFrame(updateTimer);
+            }
+        }
+
+        function showExamFinishedOverlay() {
+            const overlay = document.createElement('div');
+            overlay.className = 'exam-finished-overlay';
+            overlay.innerHTML = `
+                <div class="exam-finished-content">
+                    <h2>🎉 試験終了</h2>
+                    <p>お疲れ様でした</p>
+                    <p>提出コードをコピーして提出してください</p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function disableAllInputs() {
+            document.querySelectorAll('textarea').forEach(ta => {
+                ta.disabled = true;
+                ta.style.opacity = '0.6';
+                ta.style.cursor = 'not-allowed';
+            });
+        }
+
+        // ===== Real-time Preview =====
+        const htmlTextarea = document.getElementById('custom-html');
+        const cssTextarea = document.getElementById('custom-css');
+        const jsTextarea = document.getElementById('custom-js');
+        const previewFrame = document.getElementById('previewFrame');
+
+        function updatePreview() {
+            // HTML を反映
+            previewFrame.innerHTML = htmlTextarea.value;
+
+            // CSS を反映
+            let styleTag = document.getElementById('preview-styles');
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = 'preview-styles';
+                previewFrame.insertAdjacentElement('beforeend', styleTag);
+            }
+            styleTag.textContent = cssTextarea.value;
+
+            // JavaScript を実行
+            try {
+                const oldScripts = previewFrame.querySelectorAll('script[data-preview="true"]');
+                oldScripts.forEach(s => s.remove());
+
+                if (jsTextarea.value.trim()) {
+                    const scriptTag = document.createElement('script');
+                    scriptTag.textContent = jsTextarea.value;
+                    scriptTag.setAttribute('data-preview', 'true');
+                    previewFrame.appendChild(scriptTag);
+                }
+            } catch (err) {
+                console.warn('JavaScriptの実行エラー:', err);
+            }
+        }
+
+        htmlTextarea.addEventListener('input', updatePreview);
+        cssTextarea.addEventListener('input', updatePreview);
+        jsTextarea.addEventListener('input', updatePreview);
+
+        // Initial preview
+        updatePreview();
+
+        // ===== Submit Handler =====
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            const htmlContent = htmlTextarea.value;
+            const cssContent = cssTextarea.value;
+            const jsContent = jsTextarea.value;
+
+            const submissionCode = `
+===== フロントエンド実技試験 - 提出コード =====
+提出日時: ${new Date().toLocaleString('ja-JP')}
+
+【 HTML 】
+\`\`\`html
+${htmlContent || '<!-- HTMLなし -->'}
+\`\`\`
+
+【 CSS 】
+\`\`\`css
+${cssContent || '/* CSSなし */'}
+\`\`\`
+
+【 JavaScript 】
+\`\`\`javascript
+${jsContent || '// JavaScriptなし'}
+\`\`\`
+
+===== 提出完了 =====
+`;
+
+            navigator.clipboard.writeText(submissionCode).then(() => {
+                const submitBtn = document.getElementById('submitBtn');
+                const originalHTML = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span>✔️</span><span>コピーしました！</span>';
+                submitBtn.classList.add('copied');
+
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalHTML;
+                    submitBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('コピーに失敗しました。ブラウザの設定を確認してください。');
+                console.error(err);
+            });
+        });
+    </script>
+</body>
+</html>

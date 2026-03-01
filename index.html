@@ -437,12 +437,55 @@
             </div>
 
             <div class="instructions-section">
+                <h3>加点 ✨: React 対応問題</h3>
+                <p>Reactの知識を確認する追加問題です（加点対象）：</p>
+                <p><strong>問題：</strong> 次のコード例の中から、React のコンポーネントとして正しく動作するものを選びなさい。また、その理由を説明してください。</p>
+                <div class="requirement-box">
+                    <strong>A)</strong><br>
+                    <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                    function Counter() {<br>
+                    &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
+                    &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
+                    }
+                    </code>
+                </div>
+                <div class="requirement-box">
+                    <strong>B)</strong><br>
+                    <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                    function Counter() {<br>
+                    &nbsp;&nbsp;let count = 0;<br>
+                    &nbsp;&nbsp;return &lt;button onClick={() => count++}&gt;{count}&lt;/button&gt;;<br>
+                    }
+                    </code>
+                </div>
+                <div class="requirement-box">
+                    <strong>C)</strong><br>
+                    <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                    const Counter = () => {<br>
+                    &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
+                    &nbsp;&nbsp;useEffect(() => {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;document.title = `Count: ${count}`;<br>
+                    &nbsp;&nbsp;}, [count]);<br>
+                    &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
+                    }
+                    </code>
+                </div>
+                <div class="requirement-box" style="background: rgba(16, 185, 129, 0.05); border-left-color: #10b981;">
+                    <strong>回答方法：</strong> 下のHTML記入欄の最後に以下のフォーマットで記述してください：<br>
+                    <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                    &lt;!-- [加点] 正解: A (理由を記述) --&gt;
+                    </code>
+                </div>
+            </div>
+
+            <div class="instructions-section">
                 <h3>注意事項</h3>
                 <ul>
                     <li>外部ライブラリ（Bootstrap、jQuery等）の使用禁止</li>
                     <li>素のHTML / CSS / JavaScriptのみ使用可</li>
                     <li>下のコード記述エリアに実装してください</li>
                     <li>入力内容はリアルタイムでプレビューに反映されます</li>
+                    <li>加点問題の回答はHTMLコメントとして記述してください</li>
                 </ul>
             </div>
         </aside>

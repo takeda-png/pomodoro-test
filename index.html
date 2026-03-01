@@ -684,10 +684,7 @@
 
         reactRadios.forEach(radio => {
             radio.addEventListener('change', () => {
-                const selectedAnswer = radio.value;
-
-                // 理由テキストエリアに自動入力
-                reactReasonTextarea.value = reactReasons[selectedAnswer];
+                // 選択肢が変わった時の処理（必要があればここに追加）
             });
         });
 

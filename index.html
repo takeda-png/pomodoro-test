@@ -685,21 +685,9 @@
         reactRadios.forEach(radio => {
             radio.addEventListener('change', () => {
                 const selectedAnswer = radio.value;
-                const htmlTextarea = document.getElementById('custom-html');
 
                 // 理由テキストエリアに自動入力
                 reactReasonTextarea.value = reactReasons[selectedAnswer];
-
-                // Remove old React answer comment
-                let content = htmlTextarea.value;
-                content = content.replace(/<!-- \[加点\].*?-->\n?/g, '');
-
-                // Add new React answer comment
-                const newComment = `<!-- [加点] 正解: ${selectedAnswer} (理由: ${reactReasons[selectedAnswer]}) -->`;
-                htmlTextarea.value = content.trim() + '\n\n' + newComment;
-
-                // Trigger preview update
-                htmlTextarea.dispatchEvent(new Event('input'));
             });
         });
 

@@ -439,41 +439,62 @@
             <div class="instructions-section">
                 <h3>加点 ✨: React 対応問題</h3>
                 <p>Reactの知識を確認する追加問題です（加点対象）：</p>
-                <p><strong>問題：</strong> 次のコード例の中から、React のコンポーネントとして正しく動作するものを選びなさい。また、その理由を説明してください。</p>
+                <p><strong>問題：</strong> 次のコード例の中から、React のコンポーネントとして正しく動作するものを選びなさい。</p>
+
                 <div class="requirement-box">
-                    <strong>A)</strong><br>
-                    <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
-                    function Counter() {<br>
-                    &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
-                    &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
-                    }
-                    </code>
+                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+                        <input type="radio" name="react-answer" value="A" style="margin-top: 4px; cursor: pointer;">
+                        <div style="flex: 1;">
+                            <strong>A)</strong>
+                            <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                            function Counter() {<br>
+                            &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
+                            &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
+                            }
+                            </code>
+                        </div>
+                    </label>
                 </div>
+
                 <div class="requirement-box">
-                    <strong>B)</strong><br>
-                    <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
-                    function Counter() {<br>
-                    &nbsp;&nbsp;let count = 0;<br>
-                    &nbsp;&nbsp;return &lt;button onClick={() => count++}&gt;{count}&lt;/button&gt;;<br>
-                    }
-                    </code>
+                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+                        <input type="radio" name="react-answer" value="B" style="margin-top: 4px; cursor: pointer;">
+                        <div style="flex: 1;">
+                            <strong>B)</strong>
+                            <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                            function Counter() {<br>
+                            &nbsp;&nbsp;let count = 0;<br>
+                            &nbsp;&nbsp;return &lt;button onClick={() => count++}&gt;{count}&lt;/button&gt;;<br>
+                            }
+                            </code>
+                        </div>
+                    </label>
                 </div>
+
                 <div class="requirement-box">
-                    <strong>C)</strong><br>
-                    <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
-                    const Counter = () => {<br>
-                    &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
-                    &nbsp;&nbsp;useEffect(() => {<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;document.title = `Count: ${count}`;<br>
-                    &nbsp;&nbsp;}, [count]);<br>
-                    &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
-                    }
-                    </code>
+                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+                        <input type="radio" name="react-answer" value="C" style="margin-top: 4px; cursor: pointer;">
+                        <div style="flex: 1;">
+                            <strong>C)</strong>
+                            <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
+                            const Counter = () => {<br>
+                            &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
+                            &nbsp;&nbsp;useEffect(() => {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;document.title = `Count: ${count}`;<br>
+                            &nbsp;&nbsp;}, [count]);<br>
+                            &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
+                            }
+                            </code>
+                        </div>
+                    </label>
                 </div>
-                <div class="requirement-box" style="background: rgba(16, 185, 129, 0.05); border-left-color: #10b981;">
-                    <strong>回答方法：</strong> 下のHTML記入欄の最後に以下のフォーマットで記述してください：<br>
+
+                <div class="requirement-box" style="background: rgba(16, 185, 129, 0.05); border-left-color: #10b981; margin-top: 16px;">
+                    <strong>回答方法：</strong><br>
+                    1. 上で選択肢（A / B / C）を選ぶ<br>
+                    2. 下のHTML記入欄の最後に以下のフォーマットで理由を記述してください：<br>
                     <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
-                    &lt;!-- [加点] 正解: A (理由を記述) --&gt;
+                    &lt;!-- [加点] 正解: A (理由: stateの変更時に再レンダリングされるから) --&gt;
                     </code>
                 </div>
             </div>
@@ -648,6 +669,32 @@
 
         // Initial preview
         updatePreview();
+
+        // ===== React Bonus Problem Handler =====
+        const reactRadios = document.querySelectorAll('input[name="react-answer"]');
+        reactRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                const selectedAnswer = radio.value;
+                const htmlTextarea = document.getElementById('custom-html');
+
+                // Remove old React answer comment
+                let content = htmlTextarea.value;
+                content = content.replace(/<!-- \[加点\].*?-->\n?/g, '');
+
+                // Add new React answer comment
+                const reasons = {
+                    'A': 'useStateを使用しているため、状態変更時に再レンダリングされる',
+                    'B': '普通の変数を使用しているため、状態変更時に再レンダリングされない（再マウントされない限り値が反映されない）',
+                    'C': 'useStateとuseEffectを使用した高度な実装。documentのタイトルも動的に更新される'
+                };
+
+                const newComment = `<!-- [加点] 正解: ${selectedAnswer} (理由: ${reasons[selectedAnswer]}) -->`;
+                htmlTextarea.value = content.trim() + '\n\n' + newComment;
+
+                // Trigger preview update
+                htmlTextarea.dispatchEvent(new Event('input'));
+            });
+        });
 
         // ===== Submit Handler =====
         document.getElementById('submitBtn').addEventListener('click', () => {

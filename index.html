@@ -767,7 +767,8 @@
                     <textarea id="comments" placeholder="採点理由や改善点などを記入..."></textarea>
                 </div>
 
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px;">💾 採点を保存</button>
+                <button type="button" class="btn-secondary" style="width: 100%; margin-top: 20px; margin-bottom: 10px;" onclick="autoGrade()">🤖 自動採点</button>
+                <button type="submit" class="btn-primary" style="width: 100%;">💾 採点を保存</button>
             </form>
         </div>
     </div>
@@ -1068,6 +1069,95 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // ===== 自動採点機能 =====
+        function autoGradeSubmission(htmlCode, cssCode, jsCode, reactAnswer) {
+            const scores = {
+                scoreTask1: 0,   // 課題1: ヒーローセクション (25点)
+                scoreTask2: 0,   // 課題2: ニュースリスト (25点)
+                scoreTask3: 0,   // 課題3: ベネフィットセクション (25点)
+                scoreReact: 0,   // React加点問題 (15点)
+                scoreQuality: 0  // コード品質 (10点)
+            };
+
+            // 課題1: ヒーローセクション (25点)
+            let task1Score = 0;
+            if (htmlCode.includes('class="hero') || htmlCode.includes("class='hero")) task1Score += 5;
+            if (htmlCode.includes('hero__bg-text') || htmlCode.includes('background-text')) task1Score += 5;
+            if (htmlCode.includes('diagonal') || cssCode.includes('transform: skew') || cssCode.includes('linear-gradient')) task1Score += 5;
+            if (htmlCode.includes('hero__title') || cssCode.includes('writing-mode')) task1Score += 5;
+            if (cssCode.includes('@media') && (cssCode.includes('max-width') || cssCode.includes('min-width'))) task1Score += 5;
+            scores.scoreTask1 = Math.min(task1Score, 25);
+
+            // 課題2: ニュースリスト (25点)
+            let task2Score = 0;
+            const cardMatches = (htmlCode.match(/class="card/g) || htmlCode.match(/class='card/g) || []).length;
+            if (cardMatches >= 3) task2Score += 5;
+            else if (cardMatches > 0) task2Score += 3;
+            if (htmlCode.includes('card__img') || htmlCode.includes('img')) task2Score += 5;
+            if (htmlCode.includes('card__title')) task2Score += 5;
+            if (htmlCode.includes('card__desc')) task2Score += 5;
+            if (cssCode.includes(':hover') || cssCode.includes('transform: scale') || cssCode.includes('transition')) task2Score += 5;
+            scores.scoreTask2 = Math.min(task2Score, 25);
+
+            // 課題3: ベネフィットセクション (25点)
+            let task3Score = 0;
+            if (htmlCode.includes('class="benefit') || htmlCode.includes("class='benefit")) task3Score += 5;
+            const benefitMatches = (htmlCode.match(/benefit__card/g) || []).length;
+            if (benefitMatches >= 3) task3Score += 5;
+            if (cssCode.includes('grid') || cssCode.includes('display: grid') || cssCode.includes('display: flex')) task3Score += 5;
+            if (htmlCode.includes('benefit__number') && (cssCode.includes('background') || cssCode.includes('linear-gradient'))) task3Score += 5;
+            if (jsCode.includes('IntersectionObserver')) task3Score += 5;
+            scores.scoreTask3 = Math.min(task3Score, 25);
+
+            // React加点問題 (15点)
+            scores.scoreReact = reactAnswer === 'A' ? 15 : 0;
+
+            // コード品質 (10点)
+            let qualityScore = 0;
+            if ((htmlCode.match(/__/g) || []).length >= 3) qualityScore += 3;
+            if (htmlCode.includes('<section') || htmlCode.includes('<article') || htmlCode.includes('<header')) qualityScore += 3;
+            if (htmlCode.split('\n').length > 20) qualityScore += 2;
+            if (cssCode.includes(':root') || cssCode.includes('linear-gradient')) qualityScore += 2;
+            scores.scoreQuality = Math.min(qualityScore, 10);
+
+            scores.totalScore = scores.scoreTask1 + scores.scoreTask2 + scores.scoreTask3 + scores.scoreReact + scores.scoreQuality;
+            return scores;
+        }
+
+        function autoGrade() {
+            const submission = submissions.find(s => s.id === currentGradingId);
+            if (!submission) return;
+
+            const htmlCode = submission.html || '';
+            const cssCode = submission.css || '';
+            const jsCode = submission.js || '';
+            const reactAnswer = submission.reactAnswer || 'B';
+
+            const scores = autoGradeSubmission(htmlCode, cssCode, jsCode, reactAnswer);
+
+            // スコアを入力フィールドに自動入力
+            document.getElementById('scoreTask1').value = scores.scoreTask1;
+            document.getElementById('scoreTask2').value = scores.scoreTask2;
+            document.getElementById('scoreTask3').value = scores.scoreTask3;
+            document.getElementById('scoreReact').value = scores.scoreReact;
+            document.getElementById('scoreQuality').value = scores.scoreQuality;
+
+            updateTotalScore();
+
+            // コメントを自動生成
+            const comments = `✅ 自動採点完了\n\n【採点内訳】\n` +
+                `・課題1（ヒーローセクション）: ${scores.scoreTask1}/25点\n` +
+                `・課題2（ニュースリスト）: ${scores.scoreTask2}/25点\n` +
+                `・課題3（ベネフィットセクション）: ${scores.scoreTask3}/25点\n` +
+                `・React加点問題: ${scores.scoreReact}/15点\n` +
+                `・コード品質: ${scores.scoreQuality}/10点\n\n` +
+                `合計: ${scores.totalScore}/100点`;
+
+            document.getElementById('comments').value = comments;
+
+            alert(`🤖 自動採点完了！\n合計: ${scores.totalScore}/100点`);
         }
     </script>
 </body>

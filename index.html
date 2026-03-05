@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>フロントエンド実技試験 - 60分</title>
+    <title>フロントエンド実技試験 採点管理システム</title>
     <style>
-        /* ===== CSS Reset & Variables ===== */
         :root {
             --color-primary: #ef4444;
             --color-primary-dark: #991b1b;
@@ -46,66 +45,201 @@
         body {
             background-color: var(--color-bg);
             color: var(--color-text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 calc(var(--spacing-unit) * 2);
+            padding: 20px;
         }
 
-        /* ===== Header ===== */
         header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
             background: var(--color-bg-secondary);
+            padding: 20px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: calc(var(--spacing-unit) * 2) 0;
-        }
-
-        .header-content {
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: calc(var(--spacing-unit) * 2);
+            gap: 20px;
         }
 
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .header-controls {
-            display: flex;
-            gap: calc(var(--spacing-unit) * 2);
-            align-items: center;
-        }
-
-        .timer-display {
-            font-size: 1.25rem;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
+        h1 {
             color: var(--color-primary);
-            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
-            background: rgba(239, 68, 68, 0.1);
+            font-size: 2rem;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
             border-radius: var(--radius);
-            min-width: 180px;
-            text-align: center;
-            border: 2px solid var(--color-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #2563eb;
+        }
+
+        .btn-danger {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .screen {
             display: none;
         }
 
-        .timer-display.active {
+        .screen.active {
             display: block;
+        }
+
+        /* ===== 受験者選択画面 ===== */
+        .new-exam {
+            background: var(--color-bg-secondary);
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .submissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .submission-card {
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--color-border);
+            transition: all var(--transition);
+        }
+
+        .submission-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .submission-name {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .submission-info {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .submission-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+        }
+
+        .submission-score.graded {
+            color: var(--color-success);
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .card-buttons button {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* ===== 試験画面 ===== */
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--color-bg-secondary);
+            padding: 20px;
+            border-radius: var(--radius);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            color: var(--color-primary);
+            padding: 15px 25px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: var(--radius);
+            border: 2px solid var(--color-primary);
+            min-width: 200px;
+            text-align: center;
         }
 
         .timer-display.warning {
             animation: pulse 1s infinite;
-            background: rgba(239, 68, 68, 0.2);
         }
 
         @keyframes pulse {
@@ -113,151 +247,73 @@
             50% { opacity: 0.7; }
         }
 
-        .start-button {
-            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
-            background: var(--color-success);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-
-        .start-button:hover {
-            background: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-
-        .start-button.hidden {
-            display: none;
-        }
-
-        .submit-button {
-            padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 3);
-            background: var(--color-primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all var(--transition);
-            display: flex;
-            align-items: center;
-            gap: calc(var(--spacing-unit) * 1);
-        }
-
-        .submit-button:hover {
-            background: var(--color-primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .submit-button.copied {
-            background: var(--color-accent);
-        }
-
-        /* ===== Main Content ===== */
         main {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: calc(var(--spacing-unit) * 4);
-            padding: calc(var(--spacing-unit) * 4) 0;
-            min-height: calc(100vh - 100px);
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
-        /* ===== Instructions Panel ===== */
         .instructions-panel {
             background: var(--color-bg-secondary);
-            padding: calc(var(--spacing-unit) * 4);
+            padding: 30px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow-y: auto;
-            max-height: calc(100vh - 150px);
+            max-height: calc(100vh - 200px);
         }
 
         .instructions-title {
             font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: calc(var(--spacing-unit) * 3);
+            margin-bottom: 30px;
             color: var(--color-primary);
         }
 
         .instructions-section {
-            margin-bottom: calc(var(--spacing-unit) * 4);
+            margin-bottom: 30px;
         }
 
         .instructions-section h3 {
             font-size: 1.125rem;
             font-weight: 600;
-            margin-bottom: calc(var(--spacing-unit) * 2);
+            margin-bottom: 15px;
             color: var(--color-accent);
         }
 
-        .instructions-section p {
-            margin-bottom: calc(var(--spacing-unit) * 2);
+        .instructions-section p, .instructions-section li {
+            margin-bottom: 10px;
             line-height: 1.7;
             color: var(--color-text-secondary);
         }
 
-        .instructions-section ul,
-        .instructions-section ol {
-            margin-left: calc(var(--spacing-unit) * 3);
-            margin-bottom: calc(var(--spacing-unit) * 2);
+        .instructions-section ul {
+            margin-left: 20px;
         }
 
-        .instructions-section li {
-            margin-bottom: calc(var(--spacing-unit) * 1);
-            line-height: 1.6;
-        }
-
-        .requirement-box {
-            background: rgba(59, 130, 246, 0.05);
-            border-left: 4px solid var(--color-accent);
-            padding: calc(var(--spacing-unit) * 2);
-            margin: calc(var(--spacing-unit) * 2) 0;
-            border-radius: calc(var(--radius) / 2);
-        }
-
-        /* ===== Work Area ===== */
         .work-area {
             display: flex;
             flex-direction: column;
-            gap: calc(var(--spacing-unit) * 3);
+            gap: 20px;
         }
 
         .code-section {
             background: var(--color-bg-secondary);
             border-radius: var(--radius);
-            padding: calc(var(--spacing-unit) * 2);
+            padding: 20px;
             box-shadow: var(--shadow);
         }
 
         .code-title {
-            font-size: 1rem;
             font-weight: 600;
             color: var(--color-accent);
-            margin-bottom: calc(var(--spacing-unit) * 1);
-            display: flex;
-            align-items: center;
-            gap: calc(var(--spacing-unit) * 1);
-        }
-
-        .code-title::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--color-accent);
-            border-radius: 50%;
+            margin-bottom: 10px;
         }
 
         textarea {
             width: 100%;
-            padding: calc(var(--spacing-unit) * 2);
-            font-family: 'Courier New', 'Monaco', monospace;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
             font-size: 0.95rem;
             line-height: 1.5;
             border: 1px solid var(--color-border);
@@ -265,8 +321,7 @@
             background: var(--color-bg);
             color: var(--color-text);
             resize: vertical;
-            tab-size: 2;
-            -moz-tab-size: 2;
+            min-height: 150px;
         }
 
         textarea:focus {
@@ -279,56 +334,180 @@
             background: var(--color-bg);
             border: 2px dashed var(--color-border);
             border-radius: var(--radius);
-            padding: calc(var(--spacing-unit) * 3);
+            padding: 20px;
             min-height: 300px;
-            margin-top: calc(var(--spacing-unit) * 2);
+            overflow: auto;
         }
 
-        .preview-label {
-            font-size: 0.875rem;
+        /* ===== 採点画面 ===== */
+        .grading-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: var(--color-bg-secondary);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .grading-form > * {
+            grid-column: 1 / -1;
+        }
+
+        .code-block {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 15px;
+            overflow-x: auto;
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .code-block code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre;
+        }
+
+        .scoring-section {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid var(--color-accent);
+            padding: 20px;
+            border-radius: var(--radius);
+            grid-column: 1 / -1;
+        }
+
+        .scoring-section h3 {
+            color: var(--color-accent);
+            margin-bottom: 20px;
+        }
+
+        .score-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .score-label {
             font-weight: 600;
-            color: var(--color-primary);
-            margin-bottom: calc(var(--spacing-unit) * 2);
         }
 
-        /* ===== Exam Finished Overlay ===== */
-        .exam-finished-overlay {
+        .score-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .score-max {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .total-score {
+            padding: 15px;
+            background: var(--color-bg);
+            border-radius: var(--radius);
+            margin-top: 15px;
+            border: 2px solid var(--color-primary);
+            text-align: center;
+        }
+
+        .total-score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .comments-section {
+            grid-column: 1 / -1;
+        }
+
+        .comments-section textarea {
+            min-height: 100px;
+        }
+
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.5s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .modal-content {
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius);
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
         }
 
-        .exam-finished-content {
-            text-align: center;
-            color: white;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 15px;
         }
 
-        .exam-finished-content h2 {
-            font-size: 3rem;
-            margin-bottom: calc(var(--spacing-unit) * 3);
-            color: var(--color-success);
+        .modal-header h2 {
+            color: var(--color-primary);
         }
 
-        .exam-finished-content p {
-            font-size: 1.25rem;
-            margin-bottom: calc(var(--spacing-unit) * 4);
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
             color: var(--color-text-secondary);
         }
 
-        /* ===== Responsive ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.05);
+            border-left: 4px solid var(--color-success);
+            border-radius: var(--radius);
+        }
+
         @media (max-width: 1024px) {
             main {
                 grid-template-columns: 1fr;
@@ -337,248 +516,329 @@
             .instructions-panel {
                 max-height: 500px;
             }
+
+            .grading-form {
+                grid-template-columns: 1fr;
+            }
+
+            .score-item {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .header-content {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            header {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .timer-display {
+            .header-nav {
                 width: 100%;
+                flex-wrap: wrap;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header with Timer and Controls -->
+    <!-- Header -->
     <header>
-        <div class="container">
-            <div class="header-content">
-                <h1 class="header-title">🧪 フロントエンド実技試験</h1>
-                <div class="header-controls">
-                    <button class="start-button" id="startBtn">▶ 試験を開始する</button>
-                    <div class="timer-display" id="timerDisplay">60:00</div>
-                    <button class="submit-button" id="submitBtn" title="現在の回答をコピー">
-                        <span>✅</span>
-                        <span>提出コードをコピー</span>
-                    </button>
-                </div>
-            </div>
+        <h1>🧪 フロントエンド実技試験</h1>
+        <div class="header-nav">
+            <button class="btn-primary" onclick="showScreen('select')">📝 受験者選択</button>
+            <button class="btn-secondary" onclick="showScreen('grading')">👨‍🏫 採点管理</button>
+            <button class="btn-danger" onclick="exportData()">📥 データエクスポート</button>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Instructions Panel -->
-        <aside class="instructions-panel">
-            <h2 class="instructions-title">📋 試験指示書</h2>
-
-            <div class="instructions-section">
-                <h3>試験概要</h3>
-                <p>このページの下のカスタム記述エリアに、指示書の内容を実装してください。</p>
-                <div class="requirement-box">
-                    <strong>⏱️ 試験時間：</strong> 60分
+    <div class="container">
+        <!-- 受験者選択画面 -->
+        <div id="selectScreen" class="screen active">
+            <div class="new-exam">
+                <div class="form-group">
+                    <label for="studentName">受験者名を入力してください</label>
+                    <input type="text" id="studentName" placeholder="例：山田太郎" autocomplete="off">
                 </div>
+                <button class="btn-primary" style="width: 100%;" onclick="startExam()">▶ 試験を開始</button>
             </div>
 
-            <div class="instructions-section">
-                <h3>課題 01: ヒーローセクション</h3>
-                <p>下のHTML入力欄に以下の要素を実装してください：</p>
-                <ul>
-                    <li>背景に大きなテキスト（例：「60分」）を配置</li>
-                    <li>タイトルは縦書きで配置</li>
-                    <li>斜めのライン効果またはグラデーション背景</li>
-                    <li>レスポンシブ対応（PC・タブレット・モバイル）</li>
-                </ul>
-                <div class="requirement-box">
-                    <strong>使用技術：</strong> HTML / CSS (CSS変数、Flexbox/Grid推奨)
+            <h2 style="margin-bottom: 20px;">提出済みの試験</h2>
+            <div id="submissionsContainer"></div>
+        </div>
+
+        <!-- 試験画面 -->
+        <div id="examScreen" class="screen">
+            <div class="exam-header">
+                <div>
+                    <h2 style="margin-bottom: 5px;">試験中</h2>
+                    <div style="color: var(--color-accent); font-weight: 600;" id="studentDisplay"></div>
                 </div>
+                <div class="timer-display" id="timerDisplay">60:00</div>
+                <button class="btn-primary" onclick="submitExam()">✅ 提出</button>
             </div>
 
-            <div class="instructions-section">
-                <h3>課題 02: ニュースリスト</h3>
-                <p>HTMLに以下を実装してください：</p>
-                <ul>
-                    <li>3枚以上のカード要素を並べる</li>
-                    <li>各カードに画像、タイトル、説明を配置</li>
-                    <li>ホバー時にスケール・シャドウ・テキスト色が変化するアニメーション</li>
-                    <li>プレースホルダー画像を使用（https://placehold.jp/）</li>
-                </ul>
-                <div class="requirement-box">
-                    <strong>使用技術：</strong> CSS Grid / Flexbox、トランジション・トランスフォーム
-                </div>
-            </div>
+            <main>
+                <aside class="instructions-panel">
+                    <h2 class="instructions-title">📋 試験指示書</h2>
 
-            <div class="instructions-section">
-                <h3>課題 03: ベネフィットセクション</h3>
-                <p>HTMLに以下を実装してください：</p>
-                <ul>
-                    <li>3カラムレイアウト（数字、タイトル、説明）</li>
-                    <li>大きな数字にグラデーション色を適用</li>
-                    <li>Intersection Observer を使用したスクロール連動アニメーション</li>
-                    <li>数字の背景に装飾（円形、背景画像など）を追加</li>
-                </ul>
-                <div class="requirement-box">
-                    <strong>使用技術：</strong> JavaScript (Intersection Observer API)、CSS
-                </div>
-            </div>
-
-            <div class="instructions-section">
-                <h3>評価基準</h3>
-                <ol>
-                    <li><strong>コード品質：</strong> BEM命名規則、適切なHTML構造</li>
-                    <li><strong>ビジュアル：</strong> 指定されたデザイン要素の実装度</li>
-                    <li><strong>レスポンシブ：</strong> モバイル・タブレット・PCでの表示</li>
-                    <li><strong>アニメーション：</strong> スムーズで自然な動作</li>
-                    <li><strong>パフォーマンス：</strong> 不要なリフロー・リペイント回避</li>
-                </ol>
-            </div>
-
-            <div class="instructions-section">
-                <h3>加点 ✨: React 対応問題</h3>
-                <p>Reactの知識を確認する追加問題です（加点対象）：</p>
-                <p><strong>問題：</strong> 次のコード例の中から、React のコンポーネントとして正しく動作するものを選びなさい。</p>
-
-                <div class="requirement-box">
-                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
-                        <input type="radio" name="react-answer" value="A" style="margin-top: 4px; cursor: pointer;">
-                        <div style="flex: 1;">
-                            <strong>A)</strong>
-                            <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
-                            function Counter() {<br>
-                            &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
-                            &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
-                            }
-                            </code>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="requirement-box">
-                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
-                        <input type="radio" name="react-answer" value="B" style="margin-top: 4px; cursor: pointer;">
-                        <div style="flex: 1;">
-                            <strong>B)</strong>
-                            <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
-                            function Counter() {<br>
-                            &nbsp;&nbsp;let count = 0;<br>
-                            &nbsp;&nbsp;return &lt;button onClick={() => count++}&gt;{count}&lt;/button&gt;;<br>
-                            }
-                            </code>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="requirement-box">
-                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
-                        <input type="radio" name="react-answer" value="C" style="margin-top: 4px; cursor: pointer;">
-                        <div style="flex: 1;">
-                            <strong>C)</strong>
-                            <code style="display: block; margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">
-                            const Counter = () => {<br>
-                            &nbsp;&nbsp;const [count, setCount] = useState(0);<br>
-                            &nbsp;&nbsp;useEffect(() => {<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;document.title = `Count: ${count}`;<br>
-                            &nbsp;&nbsp;}, [count]);<br>
-                            &nbsp;&nbsp;return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;;<br>
-                            }
-                            </code>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="requirement-box" style="background: rgba(16, 185, 129, 0.05); border-left-color: #10b981; margin-top: 16px;">
-                    <strong>回答方法：</strong><br>
-                    1. 上で選択肢（A / B / C）を選ぶ<br>
-                    2. 下に理由を記述する
-                </div>
-
-                <div style="margin-top: 16px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem;">選んだ理由を記述してください：</label>
-                    <textarea id="react-answer-reason" style="width: 100%; height: 80px; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; font-size: 0.95rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-bg); color: var(--color-text); resize: vertical;" placeholder="例: useStateを使用しているため、状態変更時に再レンダリングされる"></textarea>
-                </div>
-            </div>
-
-            <div class="instructions-section">
-                <h3>注意事項</h3>
-                <ul>
-                    <li>外部ライブラリ（Bootstrap、jQuery等）の使用禁止</li>
-                    <li>素のHTML / CSS / JavaScriptのみ使用可</li>
-                    <li>下のコード記述エリアに実装してください</li>
-                    <li>入力内容はリアルタイムでプレビューに反映されます</li>
-                    <li>加点問題の回答はHTMLコメントとして記述してください</li>
-                </ul>
-            </div>
-        </aside>
-
-        <!-- Work Area -->
-        <section class="work-area">
-            <!-- HTML Input -->
-            <div class="code-section">
-                <div class="code-title">HTML</div>
-                <textarea id="custom-html" style="height: 200px;"><div></div></textarea>
-            </div>
-
-            <!-- CSS Input -->
-            <div class="code-section">
-                <div class="code-title">CSS</div>
-                <textarea id="custom-css" style="height: 200px;">/* CSSをここに記述 */</textarea>
-            </div>
-
-            <!-- JavaScript Input -->
-            <div class="code-section">
-                <div class="code-title">JavaScript</div>
-                <textarea id="custom-js" style="height: 200px;">// JavaScriptをここに記述</textarea>
-            </div>
-
-            <!-- Preview Frame -->
-            <div>
-                <div class="code-section" style="padding: 0; box-shadow: none;">
-                    <div style="padding: calc(var(--spacing-unit) * 2); border-bottom: 1px solid var(--color-border);">
-                        <div class="preview-label">📺 プレビュー</div>
+                    <div class="instructions-section">
+                        <h3>試験概要</h3>
+                        <p>下のカスタム記述エリアに、指示書の内容を実装してください。</p>
+                        <p><strong>⏱️ 試験時間：</strong> 60分</p>
                     </div>
-                    <div class="preview-frame" id="previewFrame"></div>
-                </div>
+
+                    <div class="instructions-section">
+                        <h3>課題 01: ヒーローセクション</h3>
+                        <p>以下の要素を実装してください：</p>
+                        <ul>
+                            <li>背景に大きなテキスト（例：「60分」）を配置</li>
+                            <li>タイトルは縦書きで配置</li>
+                            <li>斜めのライン効果またはグラデーション背景</li>
+                            <li>レスポンシブ対応（PC・タブレット・モバイル）</li>
+                        </ul>
+                        <p><strong>使用技術：</strong> HTML / CSS</p>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h3>課題 02: ニュースリスト</h3>
+                        <p>以下を実装してください：</p>
+                        <ul>
+                            <li>3枚以上のカード要素を並べる</li>
+                            <li>各カードに画像、タイトル、説明を配置</li>
+                            <li>ホバー時にスケール・シャドウが変化するアニメーション</li>
+                            <li>プレースホルダー画像を使用</li>
+                        </ul>
+                        <p><strong>使用技術：</strong> CSS Grid / Flexbox</p>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h3>課題 03: ベネフィットセクション</h3>
+                        <p>以下を実装してください：</p>
+                        <ul>
+                            <li>3カラムレイアウト（数字、タイトル、説明）</li>
+                            <li>大きな数字にグラデーション色を適用</li>
+                            <li>Intersection Observer を使用したスクロール連動アニメーション</li>
+                            <li>数字の背景に装飾（円形など）を追加</li>
+                        </ul>
+                        <p><strong>使用技術：</strong> JavaScript (Intersection Observer API)</p>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h3>加点 ✨: React 対応問題</h3>
+                        <p>以下から正しく動作する React コンポーネントを選択してください。</p>
+                        <p><strong>選択肢：</strong></p>
+                        <ul>
+                            <li><strong>A)</strong> useState を使用した カウンター</li>
+                            <li><strong>B)</strong> 普通の変数を使用したカウンター</li>
+                            <li><strong>C)</strong> useEffect を含むカウンター</li>
+                        </ul>
+                    </div>
+
+                    <div class="instructions-section">
+                        <h3>注意事項</h3>
+                        <ul>
+                            <li>外部ライブラリ（Bootstrap等）の使用禁止</li>
+                            <li>素のHTML / CSS / JavaScriptのみ使用可</li>
+                            <li>入力内容はリアルタイムでプレビューに反映</li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <section class="work-area">
+                    <div class="code-section">
+                        <div class="code-title">HTML</div>
+                        <textarea id="custom-html"></textarea>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-title">CSS</div>
+                        <textarea id="custom-css">/* CSSをここに記述 */</textarea>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-title">JavaScript</div>
+                        <textarea id="custom-js">// JavaScriptをここに記述</textarea>
+                    </div>
+
+                    <div class="code-section">
+                        <div style="margin-bottom: 10px; font-weight: 600;">React加点問題</div>
+                        <div>
+                            <label><input type="radio" name="react-answer" value="A"> A) useState を使用</label><br>
+                            <label><input type="radio" name="react-answer" value="B"> B) 普通の変数</label><br>
+                            <label><input type="radio" name="react-answer" value="C"> C) useEffect を使用</label>
+                        </div>
+                        <textarea id="react-reason" style="margin-top: 10px;" placeholder="選んだ理由を記述..."></textarea>
+                    </div>
+
+                    <div class="code-section">
+                        <div class="code-title">📺 プレビュー</div>
+                        <div class="preview-frame" id="previewFrame"></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- 採点画面 -->
+        <div id="gradingScreen" class="screen">
+            <h2 style="margin-bottom: 20px;">採点管理</h2>
+            <div id="gradingContainer"></div>
+        </div>
+    </div>
+
+    <!-- 採点モーダル -->
+    <div id="gradingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="gradingStudentName"></h2>
+                <button class="close-button" onclick="closeGradingModal()">✕</button>
             </div>
-        </section>
-    </main>
 
-    <!-- Scripts -->
+            <form id="gradingForm" onsubmit="saveGrade(event)">
+                <div class="code-section">
+                    <div class="code-title">HTML コード</div>
+                    <div class="code-block"><code id="displayHtml"></code></div>
+                </div>
+
+                <div class="code-section">
+                    <div class="code-title">CSS コード</div>
+                    <div class="code-block"><code id="displayCss"></code></div>
+                </div>
+
+                <div class="code-section">
+                    <div class="code-title">JavaScript コード</div>
+                    <div class="code-block"><code id="displayJs"></code></div>
+                </div>
+
+                <div class="scoring-section">
+                    <h3>📊 採点（合計100点）</h3>
+
+                    <div class="score-item">
+                        <label class="score-label">課題1</label>
+                        <div class="score-input">
+                            <input type="number" id="scoreTask1" min="0" max="25" value="0">
+                            <span class="score-max">/ 25点</span>
+                        </div>
+                    </div>
+
+                    <div class="score-item">
+                        <label class="score-label">課題2</label>
+                        <div class="score-input">
+                            <input type="number" id="scoreTask2" min="0" max="25" value="0">
+                            <span class="score-max">/ 25点</span>
+                        </div>
+                    </div>
+
+                    <div class="score-item">
+                        <label class="score-label">課題3</label>
+                        <div class="score-input">
+                            <input type="number" id="scoreTask3" min="0" max="25" value="0">
+                            <span class="score-max">/ 25点</span>
+                        </div>
+                    </div>
+
+                    <div class="score-item">
+                        <label class="score-label">React加点問題</label>
+                        <div class="score-input">
+                            <input type="number" id="scoreReact" min="0" max="15" value="0">
+                            <span class="score-max">/ 15点</span>
+                        </div>
+                    </div>
+
+                    <div class="score-item">
+                        <label class="score-label">コード品質</label>
+                        <div class="score-input">
+                            <input type="number" id="scoreQuality" min="0" max="10" value="0">
+                            <span class="score-max">/ 10点</span>
+                        </div>
+                    </div>
+
+                    <div class="total-score">
+                        <div>合計スコア</div>
+                        <div class="total-score-value" id="totalScore">0</div>
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary); margin-top: 5px;">/ 100点</div>
+                    </div>
+                </div>
+
+                <div class="comments-section">
+                    <label style="display: block; margin-bottom: 10px; font-weight: 600;">コメント・フィードバック</label>
+                    <textarea id="comments" placeholder="採点理由や改善点などを記入..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px;">💾 採点を保存</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // ===== State Management =====
-        const EXAM_DURATION = 60 * 60 * 1000; // 60 minutes
-        const STORAGE_KEY = 'exam_start_time';
+        // ===== State =====
+        const EXAM_DURATION = 60 * 60 * 1000;
+        const STORAGE_KEY = 'exam_submissions';
 
+        let submissions = [];
+        let currentExamStudent = null;
         let timerStarted = false;
         let examFinished = false;
         let START_TIME = null;
+        let currentGradingId = null;
 
-        // ===== Load Saved Time =====
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTime = localStorage.getItem(STORAGE_KEY);
-            if (savedTime) {
-                START_TIME = parseInt(savedTime, 10);
-                startExam();
-            }
+        // ===== Initialize =====
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSubmissions();
+            renderSubmissions();
+            document.getElementById('studentName').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') startExam();
+            });
         });
 
-        // ===== Start Exam Button =====
-        document.getElementById('startBtn').addEventListener('click', () => {
-            START_TIME = Date.now();
-            localStorage.setItem(STORAGE_KEY, START_TIME);
-            startExam();
-        });
-
-        function startExam() {
-            timerStarted = true;
-            document.getElementById('startBtn').classList.add('hidden');
-            document.getElementById('timerDisplay').classList.add('active');
-            updateTimer();
+        // ===== Screen Navigation =====
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenName + 'Screen').classList.add('active');
+            if (screenName === 'grading') renderGradingScreen();
         }
 
-        // ===== Timer Function =====
+        // ===== LocalStorage =====
+        function loadSubmissions() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            submissions = data ? JSON.parse(data) : [];
+        }
+
+        function saveSubmissions() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+        }
+
+        // ===== Exam Screen =====
+        function startExam() {
+            const name = document.getElementById('studentName').value.trim();
+            if (!name) {
+                alert('受験者名を入力してください');
+                return;
+            }
+
+            currentExamStudent = name;
+            document.getElementById('studentDisplay').textContent = `受験者: ${name}`;
+
+            // 既存の提出があれば読み込む
+            const existing = submissions.find(s => s.name === name);
+            if (existing) {
+                document.getElementById('custom-html').value = existing.html || '';
+                document.getElementById('custom-css').value = existing.css || '';
+                document.getElementById('custom-js').value = existing.js || '';
+                const reactRadio = document.querySelector(`input[name="react-answer"][value="${existing.reactAnswer}"]`);
+                if (reactRadio) reactRadio.checked = true;
+                document.getElementById('react-reason').value = existing.reactReason || '';
+            }
+
+            START_TIME = Date.now();
+            timerStarted = true;
+            updateTimer();
+            setupPreview();
+            showScreen('exam');
+        }
+
         function updateTimer() {
             if (!timerStarted) return;
 
@@ -588,149 +848,227 @@
             const minutes = Math.floor(remaining / 60000);
             const seconds = Math.floor((remaining % 60000) / 1000);
 
-            const timerDisplay = document.getElementById('timerDisplay');
-            timerDisplay.textContent = `残り時間：${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            const display = document.getElementById('timerDisplay');
+            display.textContent = `残り時間：${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-            // Warning animation
-            if (minutes <= 4 && seconds < 60) {
-                timerDisplay.classList.add('warning');
-            } else {
-                timerDisplay.classList.remove('warning');
+            if (minutes <= 4) {
+                display.classList.add('warning');
             }
 
-            // Exam finished
-            if (remaining <= 0 && !examFinished) {
+            if (remaining <= 0) {
                 examFinished = true;
-                localStorage.removeItem(STORAGE_KEY);
-                showExamFinishedOverlay();
-                disableAllInputs();
-            } else if (remaining > 0) {
+                submitExam();
+            } else {
                 requestAnimationFrame(updateTimer);
             }
         }
 
-        function showExamFinishedOverlay() {
-            const overlay = document.createElement('div');
-            overlay.className = 'exam-finished-overlay';
-            overlay.innerHTML = `
-                <div class="exam-finished-content">
-                    <h2>🎉 試験終了</h2>
-                    <p>お疲れ様でした</p>
-                    <p>提出コードをコピーして提出してください</p>
-                </div>
-            `;
-            document.body.appendChild(overlay);
-        }
+        function setupPreview() {
+            const html = document.getElementById('custom-html');
+            const css = document.getElementById('custom-css');
+            const js = document.getElementById('custom-js');
+            const preview = document.getElementById('previewFrame');
 
-        function disableAllInputs() {
-            document.querySelectorAll('textarea').forEach(ta => {
-                ta.disabled = true;
-                ta.style.opacity = '0.6';
-                ta.style.cursor = 'not-allowed';
-            });
-        }
+            function updatePreview() {
+                preview.innerHTML = html.value;
+                let style = preview.querySelector('style[data-preview]');
+                if (!style) {
+                    style = document.createElement('style');
+                    style.setAttribute('data-preview', 'true');
+                    preview.appendChild(style);
+                }
+                style.textContent = css.value;
 
-        // ===== Real-time Preview =====
-        const htmlTextarea = document.getElementById('custom-html');
-        const cssTextarea = document.getElementById('custom-css');
-        const jsTextarea = document.getElementById('custom-js');
-        const previewFrame = document.getElementById('previewFrame');
-
-        function updatePreview() {
-            // HTML を反映
-            previewFrame.innerHTML = htmlTextarea.value;
-
-            // CSS を反映
-            let styleTag = document.getElementById('preview-styles');
-            if (!styleTag) {
-                styleTag = document.createElement('style');
-                styleTag.id = 'preview-styles';
-                previewFrame.insertAdjacentElement('beforeend', styleTag);
-            }
-            styleTag.textContent = cssTextarea.value;
-
-            // JavaScript を実行
-            try {
-                const oldScripts = previewFrame.querySelectorAll('script[data-preview="true"]');
+                const oldScripts = preview.querySelectorAll('script[data-preview]');
                 oldScripts.forEach(s => s.remove());
 
-                if (jsTextarea.value.trim()) {
-                    const scriptTag = document.createElement('script');
-                    scriptTag.textContent = jsTextarea.value;
-                    scriptTag.setAttribute('data-preview', 'true');
-                    previewFrame.appendChild(scriptTag);
+                if (js.value.trim()) {
+                    const script = document.createElement('script');
+                    script.textContent = js.value;
+                    script.setAttribute('data-preview', 'true');
+                    preview.appendChild(script);
                 }
-            } catch (err) {
-                console.warn('JavaScriptの実行エラー:', err);
+            }
+
+            html.addEventListener('input', updatePreview);
+            css.addEventListener('input', updatePreview);
+            js.addEventListener('input', updatePreview);
+
+            // Auto-save
+            setInterval(() => {
+                const existing = submissions.find(s => s.name === currentExamStudent);
+                if (existing) {
+                    existing.html = html.value;
+                    existing.css = css.value;
+                    existing.js = js.value;
+                    existing.reactAnswer = document.querySelector('input[name="react-answer"]:checked')?.value || '';
+                    existing.reactReason = document.getElementById('react-reason').value;
+                    saveSubmissions();
+                }
+            }, 10000);
+
+            updatePreview();
+        }
+
+        function submitExam() {
+            const html = document.getElementById('custom-html').value;
+            const css = document.getElementById('custom-css').value;
+            const js = document.getElementById('custom-js').value;
+            const reactAnswer = document.querySelector('input[name="react-answer"]:checked')?.value || '';
+            const reactReason = document.getElementById('react-reason').value;
+
+            let submission = submissions.find(s => s.name === currentExamStudent);
+            if (!submission) {
+                submission = { id: Date.now(), name: currentExamStudent };
+                submissions.push(submission);
+            }
+
+            submission.html = html;
+            submission.css = css;
+            submission.js = js;
+            submission.reactAnswer = reactAnswer;
+            submission.reactReason = reactReason;
+            submission.submittedAt = new Date().toLocaleString('ja-JP');
+
+            saveSubmissions();
+            alert('試験が提出されました！採点管理で採点してください。');
+            timerStarted = false;
+            showScreen('select');
+            renderSubmissions();
+        }
+
+        // ===== Grading Screen =====
+        function renderSubmissions() {
+            const container = document.getElementById('submissionsContainer');
+            if (submissions.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div>提出済みの試験はありません</div>';
+                return;
+            }
+
+            container.innerHTML = submissions.map(s => `
+                <div class="submission-card">
+                    <div class="submission-name">${escapeHtml(s.name)}</div>
+                    <div class="submission-info">提出日時: ${s.submittedAt || '未提出'}</div>
+                    <div class="submission-score ${s.totalScore ? 'graded' : ''}">
+                        ${s.totalScore ? s.totalScore + '/100' : '未採点'}
+                    </div>
+                    <div class="card-buttons">
+                        <button class="btn-secondary" onclick="editExam('${s.name}')">✏️ 編集</button>
+                        <button class="btn-primary" onclick="openGradingModal(${s.id})">👁️ 採点</button>
+                        <button class="btn-danger" onclick="deleteSubmission(${s.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderGradingScreen() {
+            const container = document.getElementById('gradingContainer');
+            if (submissions.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div>提出済みの試験はありません</div>';
+                return;
+            }
+
+            container.innerHTML = submissions.map(s => `
+                <div class="submission-card">
+                    <div class="submission-name">${escapeHtml(s.name)}</div>
+                    <div class="submission-info">提出日時: ${s.submittedAt || '未提出'}</div>
+                    <div class="submission-score ${s.totalScore ? 'graded' : ''}">
+                        ${s.totalScore ? s.totalScore + '/100' : '未採点'}
+                    </div>
+                    <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="openGradingModal(${s.id})">採点</button>
+                </div>
+            `).join('');
+        }
+
+        function openGradingModal(submissionId) {
+            const submission = submissions.find(s => s.id === submissionId);
+            if (!submission) return;
+
+            currentGradingId = submissionId;
+            document.getElementById('gradingStudentName').textContent = submission.name;
+            document.getElementById('displayHtml').textContent = submission.html || '<!-- HTML なし -->';
+            document.getElementById('displayCss').textContent = submission.css || '/* CSS なし */';
+            document.getElementById('displayJs').textContent = submission.js || '// JavaScript なし';
+
+            document.getElementById('scoreTask1').value = submission.scoreTask1 || 0;
+            document.getElementById('scoreTask2').value = submission.scoreTask2 || 0;
+            document.getElementById('scoreTask3').value = submission.scoreTask3 || 0;
+            document.getElementById('scoreReact').value = submission.scoreReact || 0;
+            document.getElementById('scoreQuality').value = submission.scoreQuality || 0;
+            document.getElementById('comments').value = submission.comments || '';
+
+            updateTotalScore();
+            document.getElementById('gradingModal').classList.add('active');
+        }
+
+        function closeGradingModal() {
+            document.getElementById('gradingModal').classList.remove('active');
+        }
+
+        function saveGrade(event) {
+            event.preventDefault();
+            const submission = submissions.find(s => s.id === currentGradingId);
+            if (!submission) return;
+
+            submission.scoreTask1 = parseInt(document.getElementById('scoreTask1').value) || 0;
+            submission.scoreTask2 = parseInt(document.getElementById('scoreTask2').value) || 0;
+            submission.scoreTask3 = parseInt(document.getElementById('scoreTask3').value) || 0;
+            submission.scoreReact = parseInt(document.getElementById('scoreReact').value) || 0;
+            submission.scoreQuality = parseInt(document.getElementById('scoreQuality').value) || 0;
+            submission.comments = document.getElementById('comments').value;
+            submission.totalScore = submission.scoreTask1 + submission.scoreTask2 + submission.scoreTask3 + submission.scoreReact + submission.scoreQuality;
+
+            saveSubmissions();
+            closeGradingModal();
+            alert('採点を保存しました');
+            renderSubmissions();
+            renderGradingScreen();
+        }
+
+        function updateTotalScore() {
+            const total = (parseInt(document.getElementById('scoreTask1').value) || 0) +
+                         (parseInt(document.getElementById('scoreTask2').value) || 0) +
+                         (parseInt(document.getElementById('scoreTask3').value) || 0) +
+                         (parseInt(document.getElementById('scoreReact').value) || 0) +
+                         (parseInt(document.getElementById('scoreQuality').value) || 0);
+            document.getElementById('totalScore').textContent = total;
+        }
+
+        document.addEventListener('input', (e) => {
+            if (e.target.type === 'number' && e.target.parentElement.classList.contains('score-input')) {
+                updateTotalScore();
+            }
+        });
+
+        function editExam(name) {
+            document.getElementById('studentName').value = name;
+            startExam();
+        }
+
+        function deleteSubmission(id) {
+            if (confirm('この提出を削除しますか？')) {
+                submissions = submissions.filter(s => s.id !== id);
+                saveSubmissions();
+                renderSubmissions();
+                renderGradingScreen();
             }
         }
 
-        htmlTextarea.addEventListener('input', updatePreview);
-        cssTextarea.addEventListener('input', updatePreview);
-        jsTextarea.addEventListener('input', updatePreview);
+        function exportData() {
+            const data = JSON.stringify(submissions, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `exam_data_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+        }
 
-        // Initial preview
-        updatePreview();
-
-        // ===== React Bonus Problem Handler =====
-        const reactRadios = document.querySelectorAll('input[name="react-answer"]');
-        const reactReasonTextarea = document.getElementById('react-answer-reason');
-
-        const reactReasons = {
-            'A': 'useStateを使用しているため、状態変更時に再レンダリングされる',
-            'B': '普通の変数を使用しているため、状態変更時に再レンダリングされない（再マウントされない限り値が反映されない）',
-            'C': ''
-        };
-
-        reactRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                // 選択肢が変わった時の処理（必要があればここに追加）
-            });
-        });
-
-        // ===== Submit Handler =====
-        document.getElementById('submitBtn').addEventListener('click', () => {
-            const htmlContent = htmlTextarea.value;
-            const cssContent = cssTextarea.value;
-            const jsContent = jsTextarea.value;
-
-            const submissionCode = `
-===== フロントエンド実技試験 - 提出コード =====
-提出日時: ${new Date().toLocaleString('ja-JP')}
-
-【 HTML 】
-\`\`\`html
-${htmlContent || '<!-- HTMLなし -->'}
-\`\`\`
-
-【 CSS 】
-\`\`\`css
-${cssContent || '/* CSSなし */'}
-\`\`\`
-
-【 JavaScript 】
-\`\`\`javascript
-${jsContent || '// JavaScriptなし'}
-\`\`\`
-
-===== 提出完了 =====
-`;
-
-            navigator.clipboard.writeText(submissionCode).then(() => {
-                const submitBtn = document.getElementById('submitBtn');
-                const originalHTML = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<span>✔️</span><span>コピーしました！</span>';
-                submitBtn.classList.add('copied');
-
-                setTimeout(() => {
-                    submitBtn.innerHTML = originalHTML;
-                    submitBtn.classList.remove('copied');
-                }, 2000);
-            }).catch(err => {
-                alert('コピーに失敗しました。ブラウザの設定を確認してください。');
-                console.error(err);
-            });
-        });
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
     </script>
 </body>
 </html>
